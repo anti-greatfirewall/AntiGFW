@@ -22,32 +22,21 @@ AntiGFW会根据您的配置文件从制定的网站抓取Shadowsocks的账号�
 
 ```
 {
-    "websites": [
-        { //用于将网站代码下载至指定文件
-            "url": "example.com",
-            "file": "file"
+    "websites": [ //用于将网站代码下载至指定文件
+        {
+            "url": "example.com", //网页地址
+            "file": "file" //目标文件名(不可相同)
         }
     ],
-    "plaintexts": [
-        { //提供明文密码网站
-            "file": "file",
-            "url": "ss.example.com",
-            "port": 2333,
-            "pwdprefix": "pwdpwd",
-            "length": 8,
-            "method": "aes-256-cfb",
-            "remarks": "Just For Test!"
-            "isSSUrl": false //留空默认为false
-        },
-        { //提供ss://链接网站
-            "file": "file",
-            "url": "ss.example.com",
-            "port": 2333,
-            "pwdprefix": "ssurl",
-            "length": 8,
-            "method": "aes-256-cfb",
-            "remarks": "Just For ss:// Test!"
-            "isSSUrl": true
+    "plaintexts": [ //提供明文密码网站
+        {
+            "file": "file", //文件名
+            "url": "ss.example.com", //服务器IP
+            "port": 2333, //服务器端口
+            "pwdprefix": "pwdpwd", //密码字符串在源代码中的前缀
+            "length": 8, //密码长度
+            "method": "aes-256-cfb", //加密方式
+            "remarks": "Just For Test!" //服务器备注
         }
     ],
     "QRCodes": [
@@ -66,14 +55,21 @@ AntiGFW会根据您的配置文件从制定的网站抓取Shadowsocks的账号�
             "timeout": 5
         }
     ],
-    "versions": [
+    "versions": [ //Shadowsocks版本列表
         "4.0.6"
     ],
     "autorun": { //自动运行
         "configPath": "C:\\path\\to\\config", //配置文件夹路径
         "versionIndex": 1 //版本编号
     },
-    "autorunEnabled": false
+    "shadowsocksConfig": { //Shadowsocks配置
+        "global": false, //是否开启全局模式
+        "enabled": true, //是否启动代理
+        "shareOverLan": false, //是否局域网共享
+        "autoCheckUpdate": true, //是否自动检查更新
+        "index": -1 //默认选择的服务器索引，-1代表高可用模式
+    },
+    "autorunEnabled": false //是否自动运行
 }
 ```
 
