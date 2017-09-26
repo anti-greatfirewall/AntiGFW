@@ -20,6 +20,8 @@ AntiGFW会根据您的配置文件从制定的网站抓取Shadowsocks的账号�
 
 :warning:请使用前删除json中的注释!
 
+index中，-1代表高可用，-2代表负载均衡，-3代表根据统计。
+
 ```
 {
     "websites": [ //用于将网站代码下载至指定文件
@@ -67,7 +69,7 @@ AntiGFW会根据您的配置文件从制定的网站抓取Shadowsocks的账号�
         "enabled": true, //是否启动代理
         "shareOverLan": false, //是否局域网共享
         "autoCheckUpdate": true, //是否自动检查更新
-        "index": -1 //默认选择的服务器索引，-1代表高可用模式
+        "index": -1 //默认选择的服务器索引，-1为高可用
     },
     "autorunEnabled": false //是否自动运行
 }
