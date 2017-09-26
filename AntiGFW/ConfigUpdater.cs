@@ -55,6 +55,7 @@ namespace AntiGFW {
             Console.WriteLine("Read:");
             string settings = File.ReadAllText("settings.json");
             Config config = JsonConvert.DeserializeObject<Config>(settings);
+            AutoStartup.Set(config.autoStartup);
             string path = config.configPath;
 
             Console.WriteLine("Directory:");

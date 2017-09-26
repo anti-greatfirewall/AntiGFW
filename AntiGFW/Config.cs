@@ -54,6 +54,7 @@ namespace AntiGFW {
 
         public bool autorunEnabled;
         public string configPath;
+        public bool autoStartup;
         
         public Config() {
             websites = new List<Website>();
@@ -65,6 +66,7 @@ namespace AntiGFW {
             shadowsocksConfig = new ShadowsocksConfig();
 
             autorunEnabled = false;
+            autoStartup = false;
             configPath = "";
         }
     }
