@@ -125,6 +125,12 @@ namespace AntiGFW {
                 result.shareOverLan = config.shadowsocksConfig.shareOverLan;
                 result.global = config.shadowsocksConfig.global;
                 result.index = config.shadowsocksConfig.index;
+                switch (result.index) {
+                    case -1: result.strategy = "com.shadowsocks.strategy.ha"; break;
+                    case -2: result.strategy = "com.shadowsocks.strategy.balancing"; break;
+                    case -3: result.strategy = "com.shadowsocks.strategy.scbs"; break;
+                    default: result.strategy = ""; break;
+                }
 
                 result.configs.AddRange(config.statics);
                 File.WriteAllText(path + @"\ShadowSocks\" + config.versions[num] + @"\gui-config.json", JsonConvert.SerializeObject(result));
