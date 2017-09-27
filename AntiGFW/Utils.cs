@@ -10,6 +10,11 @@ namespace AntiGFW {
     }
 
     internal class Utils {
+        private class Dummy { }
+        
+        public static string ExePath => typeof(Dummy).Assembly.Location;
+        public static string ExeDirectory => AppDomain.CurrentDomain.BaseDirectory;
+
         public static RegistryKey OpenRegKey(string name, bool writable, RegistryHive hive = RegistryHive.CurrentUser) {
             RegistryKey result;
             try {
@@ -24,19 +29,24 @@ namespace AntiGFW {
     }
 
     internal static class AutoStartup {
-        private static readonly string ExecutablePath = Process.GetCurrentProcess().MainModule.FileName;
-        private static readonly string Key = "AntiGFW_" + Environment.CurrentDirectory.GetHashCode();
+        private static readonly string ExecutablePath = Utils.ExePath;
+        private static readonly string Key = "AntiGFW_" + Utils.ExeDirectory;
 
-        public static void Set(bool enabled) {
+        public static bool Enabled {
+            set => Set(value);
+        }
+
+        private static void Set(bool enabled) {
             try {
                 RegistryKey registryKey = Utils.OpenRegKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                string key = "AntiGFW_" + Key.GetHashCode();
                 if (enabled) {
-                    registryKey.SetValue(Key, ExecutablePath);
+                    registryKey.SetValue(key, ExecutablePath);
                 } else {
-                    registryKey.DeleteValue(Key);
+                    registryKey.DeleteValue(key);
                 }
-            } catch (Exception e) {
-                Console.WriteLine(e.ToString());
+            } catch {
+                // ignored
             }
         }
     }
