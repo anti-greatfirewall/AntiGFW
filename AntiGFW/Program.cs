@@ -15,8 +15,8 @@ namespace AntiGFW {
             };
             wc.Headers.Set("User-Agent", UserAgent);
             
+            bool update = File.Exists($"{Utils.ExeDirectory}settings.json");
             ConfigUpdater updater = new ConfigUpdater(wc);
-            bool update = File.Exists(Utils.ExeDirectory + "settings.json");
 
             if (update) {
                 updater.Start();

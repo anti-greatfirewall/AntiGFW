@@ -30,7 +30,7 @@ namespace AntiGFW {
 
     internal static class AutoStartup {
         private static readonly string ExecutablePath = Utils.ExePath;
-        private static readonly string Key = "AntiGFW_" + Utils.ExeDirectory;
+        private static readonly string Key = "AntiGFW_" + Utils.ExeDirectory.GetHashCode();
 
         public static bool Enabled {
             set => Set(value);
@@ -39,11 +39,10 @@ namespace AntiGFW {
         private static void Set(bool enabled) {
             try {
                 RegistryKey registryKey = Utils.OpenRegKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-                string key = "AntiGFW_" + Key.GetHashCode();
                 if (enabled) {
-                    registryKey.SetValue(key, ExecutablePath);
+                    registryKey.SetValue(Key, ExecutablePath);
                 } else {
-                    registryKey.DeleteValue(key);
+                    registryKey.DeleteValue(Key);
                 }
             } catch {
                 // ignored

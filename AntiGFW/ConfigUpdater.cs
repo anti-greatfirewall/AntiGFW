@@ -58,6 +58,14 @@ namespace AntiGFW {
             AutoStartup.Enabled = config.autoStartup;
             string path = config.configPath;
 
+            if (config.hourlyStartup) {
+                Console.WriteLine("TaskScheduler Setting...");
+                Thread.Sleep(1000);
+                config.hourlyStartup = false;
+                TaskScheduler.CreateTask();
+                return;
+            }
+
             Console.WriteLine("Directory:");
             Console.WriteLine(path);
 

@@ -54,6 +54,7 @@ namespace AntiGFW {
 
         public bool autorunEnabled;
         public string configPath;
+        public bool hourlyStartup;
         public bool autoStartup;
         
         public Config() {
