@@ -60,8 +60,9 @@ namespace AntiGFW {
 
             if (config.hourlyStartup) {
                 Console.WriteLine("TaskScheduler Setting...");
-                Thread.Sleep(1000);
                 config.hourlyStartup = false;
+                File.WriteAllText("settings.json", JsonConvert.SerializeObject(config));
+                Thread.Sleep(1000);
                 TaskScheduler.CreateTask();
                 return;
             }
