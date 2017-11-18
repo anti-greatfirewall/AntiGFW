@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 
+// ReSharper disable InconsistentNaming
+
 namespace AntiGFW {
     [Serializable]
     public class LogViewerConfig {

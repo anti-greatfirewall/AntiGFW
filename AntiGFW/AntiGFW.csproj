@@ -91,6 +91,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskScheduler.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="VPNConfigUpdater.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

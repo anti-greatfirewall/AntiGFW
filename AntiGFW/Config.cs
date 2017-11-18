@@ -22,10 +22,8 @@ namespace AntiGFW {
 
         [Serializable]
         public class Autorun {
-            public string configPath;
             public int versionIndex;
             public Autorun() {
-                configPath = Environment.CurrentDirectory;
                 versionIndex = 0;
             }
         }
@@ -44,6 +42,42 @@ namespace AntiGFW {
             }
         }
 
+        [Serializable]
+        public class PacUrl {
+            [Serializable]
+            public class DynamicPac {
+                public string url, pacprefix;
+                public int length;
+
+                public DynamicPac() {
+                    url = pacprefix = null;
+                    length = 0;
+                }
+            }
+
+            public bool enabled;
+            public bool staticUrl;
+            public string pacUrl;
+            public DynamicPac dynamicPac;
+
+            public PacUrl() {
+                enabled = false;
+            }
+
+            public string GetUrl() {
+                if (!enabled) {
+                    return null;
+                }
+                if (staticUrl) {
+                    return pacUrl;
+                }
+                string html = Utils.DownloadString(dynamicPac.url);
+                int pos = html.IndexOf(dynamicPac.pacprefix, StringComparison.Ordinal);
+                return html.Substring(pos + dynamicPac.length, dynamicPac.length);
+                //"text">
+            }
+        }
+
         public List<Website> websites;
         public List<PlainText> plaintexts;
         public List<QRCode> qrCodes;
@@ -51,9 +85,10 @@ namespace AntiGFW {
         public List<string> versions;
         public Autorun autorun;
         public ShadowsocksConfig shadowsocksConfig;
+        public PacUrl pacUrl;
 
+        public string shadowsocksPath;
         public bool autorunEnabled;
-        public string configPath;
         public bool hourlyStartup;
         public bool autoStartup;
         
@@ -66,9 +101,10 @@ namespace AntiGFW {
             autorun = new Autorun();
             shadowsocksConfig = new ShadowsocksConfig();
 
+            shadowsocksPath = null;
             autorunEnabled = false;
             autoStartup = false;
-            configPath = "";
+            pacUrl = new PacUrl();
         }
     }
 }

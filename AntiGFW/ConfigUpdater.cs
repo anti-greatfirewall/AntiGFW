@@ -1,22 +1,15 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Net;
 using System.Threading;
+using Newtonsoft.Json;
 using ThoughtWorks.QRCode.Codec;
 using ThoughtWorks.QRCode.Codec.Data;
 
 namespace AntiGFW {
     public class ConfigUpdater {
-        private readonly WebClient _wc;
-
-        public ConfigUpdater(WebClient web) {
-            _wc = web;
-        }
-
         private static void TaskKill(string name) {
             foreach (Process p in Process.GetProcesses()) {
                 if (p.ProcessName.ToLower() != name) continue;
@@ -29,10 +22,10 @@ namespace AntiGFW {
             }
         }
 
-        private void QrCode(Config config, ref Configuration result) {
+        private static void QrCode(Config config, ref Configuration result) {
             foreach (Config.QRCode i in config.qrCodes) {
                 try {
-                    byte[] file = _wc.DownloadData(i.url);
+                    byte[] file = Utils.DownloadData(i.url);
                     Bitmap bmp = new Bitmap(new MemoryStream(file));
                     QRCodeDecoder decoder = new QRCodeDecoder();
                     QRCodeBitmapImage image = new QRCodeBitmapImage(bmp);
@@ -56,15 +49,21 @@ namespace AntiGFW {
             string settings = File.ReadAllText($"{Utils.ExeDirectory}settings.json");
             Config config = JsonConvert.DeserializeObject<Config>(settings);
             AutoStartup.Enabled = config.autoStartup;
-            string path = config.configPath;
+            string path = Utils.ExeDirectory;
 
-            if (config.hourlyStartup) {
+            if (TaskScheduler.FindTask()) {
+                // ignored
+            } else if (config.hourlyStartup) {
                 Console.WriteLine("TaskScheduler Setting...");
-                config.hourlyStartup = false;
-                File.WriteAllText("settings.json", JsonConvert.SerializeObject(config));
+                File.WriteAllText("settings.json", JsonConvert.SerializeObject(config, Formatting.Indented));
                 Thread.Sleep(1000);
                 TaskScheduler.CreateTask();
                 return;
+            } else {
+                Console.WriteLine("TaskScheduler Setting...");
+                File.WriteAllText("settings.json", JsonConvert.SerializeObject(config));
+                Thread.Sleep(1000);
+                TaskScheduler.DeleteTask();
             }
 
             Console.WriteLine("Directory:");
@@ -73,7 +72,7 @@ namespace AntiGFW {
             Console.WriteLine("\nDownload:");
             try {
                 foreach (Config.Website i in config.websites) {
-                    content[i.file] = _wc.DownloadString(i.url);
+                    content[i.file] = Utils.DownloadString(i.url);
                     Console.WriteLine($"{i.url}");
                 }
             } catch (Exception e) {
@@ -127,6 +126,7 @@ namespace AntiGFW {
                 }
             }
             num--;
+            string shadowsocksPath = $@"{config.shadowsocksPath ?? Utils.ExeDirectory}\Shadowsocks\{config.versions[num]}\Shadowsocks.exe";
 
             Console.WriteLine("\nWrite");
             try {
@@ -136,21 +136,39 @@ namespace AntiGFW {
                 result.global = config.shadowsocksConfig.global;
                 result.index = config.shadowsocksConfig.index;
                 switch (result.index) {
-                    case -1: result.strategy = "com.shadowsocks.strategy.ha"; break;
-                    case -2: result.strategy = "com.shadowsocks.strategy.balancing"; break;
-                    case -3: result.strategy = "com.shadowsocks.strategy.scbs"; break;
-                    default: result.strategy = ""; break;
+                    case -1: 
+                        result.strategy = "com.shadowsocks.strategy.ha";
+                        Console.WriteLine("Strategy: High availability");
+                        break;
+                    case -2:
+                        result.strategy = "com.shadowsocks.strategy.balancing";
+                        Console.WriteLine("Strategy: Balancing");
+                        break;
+                    case -3:
+                        result.strategy = "com.shadowsocks.strategy.scbs";
+                        Console.WriteLine("Strategy: According to the statistics");
+                        break;
+                    default:
+                        result.strategy = "";
+                        Console.WriteLine("Strategy: Null");
+                        break;
+                }
+                result.configs.AddRange(config.statics);
+
+                result.pacUrl = config.pacUrl.GetUrl();
+                Console.WriteLine($"PAC Url: {result.pacUrl ?? "<Offline PAC>"}");
+                if (result.pacUrl != null) {
+                    result.useOnlinePac = true;
                 }
 
-                result.configs.AddRange(config.statics);
-                File.WriteAllText(path + @"\ShadowSocks\" + config.versions[num] + @"\gui-config.json", JsonConvert.SerializeObject(result));
+                File.WriteAllText($@"{shadowsocksPath}\gui-config.json", JsonConvert.SerializeObject(result, Formatting.Indented));
             } catch (Exception e) {
                 Console.WriteLine(e.ToString());
             }
 
             Console.WriteLine("\nOpen Shadowsocks " + config.versions[num]);
             try {
-                Process.Start(path + @"\ShadowSocks\" + config.versions[num] + @"\Shadowsocks.exe");
+                Process.Start(shadowsocksPath);
             } catch (Exception e) {
                 Console.WriteLine(e.ToString());
             }
