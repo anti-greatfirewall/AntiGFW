@@ -1,4 +1,4 @@
-# AntiGFW 1.0
+# AntiGFW 1.1
 
 [![License](https://img.shields.io/badge/license-GNU--GPLv3-blue.svg)](https://github.com/anti-greatfirewall/AntiGFW/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/anti-greatfirewall/AntiGFW.svg?maxAge=2592000?style=flat-square)](https://github.com/anti-greatfirewall/AntiGFW/issues)
@@ -72,6 +72,8 @@ index中，-1代表高可用，-2代表负载均衡，-3代表根据统计。
         "index": -1 //默认选择的服务器索引，-1为高可用
     },
     "autorunEnabled": false //是否自动运行
+    "hourlyStartup": false, //是否一小时执行一次
+    "autoStartup": true //是否开机运行
 }
 ```
 
