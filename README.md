@@ -20,9 +20,11 @@ AntiGFW会根据您的配置文件从制定的网站抓取Shadowsocks的账号�
 
 :warning:请使用前删除json中的注释!
 
-若不清楚配置，请点击[这里](view-source:https://raw.githubusercontent.com/anti-greatfirewall/AntiGFW/master/Extract.c.txt)复制源代码并编译运行，即解压即用~
+若不清楚配置，请点击[这里](https://raw.githubusercontent.com/anti-greatfirewall/AntiGFW/master/Extract.c.txt)复制源代码并编译运行，即解压即用~
 
-```json
+:warning:若源代码不加载完全，请查看源代码(Chrome: Ctrl+U)后再复制!
+
+```javascript
 {
     "websites": [ //用于将网站代码下载至指定文件
         {
