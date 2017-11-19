@@ -126,7 +126,7 @@ namespace AntiGFW {
                 }
             }
             num--;
-            string shadowsocksPath = $@"{config.shadowsocksPath ?? Utils.ExeDirectory}\Shadowsocks\{config.versions[num]}\Shadowsocks.exe";
+            string shadowsocksPath = $@"{config.shadowsocksPath ?? Utils.ExeDirectory}Shadowsocks\{config.versions[num]}";
 
             Console.WriteLine("\nWrite");
             try {
@@ -168,7 +168,7 @@ namespace AntiGFW {
 
             Console.WriteLine("\nOpen Shadowsocks " + config.versions[num]);
             try {
-                Process.Start(shadowsocksPath);
+                Process.Start($@"{shadowsocksPath}\Shadowsocks.exe");
             } catch (Exception e) {
                 Console.WriteLine(e.ToString());
             }
